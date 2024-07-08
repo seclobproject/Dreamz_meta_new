@@ -85,10 +85,10 @@ console.log(userInfo,"yser from headr")
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link to="/" className="main-logo flex items-center shrink-0">
                             <div className="dark:block hidden">
-                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" />
+                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/LOGO.png" alt="logo" />
                             </div>
                             <div className="visible dark:hidden">
-                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" />
+                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/LOGO.png" alt="logo" />
                             </div>
                         </Link>
                         <button
@@ -206,7 +206,7 @@ console.log(userInfo,"yser from headr")
                             <li>
                                 <NavLink to="/dashboard">{t('Home')}</NavLink>
                             </li>
-                            {userInfo && !userInfo.isAdmin && userInfo.userStatus &&(
+                            {userInfo && userInfo.userStatus &&(
   <li>
     <NavLink to="/signup">{t('Add New Member')}</NavLink>
   </li>

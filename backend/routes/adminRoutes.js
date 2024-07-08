@@ -883,7 +883,7 @@ router.post(
     const userId=req.user._id;
 
       const user = await User.findById(userId);
-
+      const admin = await User.findOne({ isAdmin: true });
       const earning=user.earning;
 
       if(earning<amount&&earning>=1){

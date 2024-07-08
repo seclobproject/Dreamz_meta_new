@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import IconPencilPaper from '../components/Icon/IconPencilPaper';
 import { getUserDetails, upgradeUser } from '../store/userSlice';
-// import { ERC20_ABI } from '../abi';
 import WalletConnectButton from '../components/Button';
 import { COMPANY_WALLET, URL, USDT_ADDRESS } from '../Constants';
 import TimerComponent from '../components/Timer';
@@ -15,12 +14,13 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import Marquee from 'react-fast-marquee';
-
 import { useWeb3ModalState } from '@web3modal/ethers/react';
 import { ERC20_ABI } from '../ERC20_ABI';
-
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { BrowserProvider, Contract, ethers, formatUnits, parseUnits } from 'ethers'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
+import Modal from 'react-modal';
+import '../assets/css/modal.css';
+import IconX from '../components/Icon/IconX';
+import IconCreditCard from '../components/Icon/IconCreditCard';
 
 const Finance = () => {
     const MySwal = withReactContent(Swal);
@@ -32,9 +32,19 @@ const Finance = () => {
     const [refresh, setRefresh] = useState('');
     const [errorhandle, setErrorHandle] = useState('');
     const currentDateTime = new Date();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [amount, setAmount] = useState('');
+    const [message, setMessage] = useState('');
 
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
     const { data: userInfo } = useAppSelector((state: any) => state.getUserDetailsReducer);
-console.log(userInfo,"se");
+    console.log(userInfo, 'se');
 
     const { loading: joiningLoading, data: joiningData, error: joiningError } = useAppSelector((state: any) => state.sendJoiningRequestReducer);
 
@@ -52,34 +62,34 @@ console.log(userInfo,"se");
     }, [upgradeInfo, upgradeError]);
 
     const { address, chainId, isConnected } = useWeb3ModalAccount();
-    const { walletProvider } = useWeb3ModalProvider()
-    const { open, selectedNetworkId } = useWeb3ModalState()
+    const { walletProvider } = useWeb3ModalProvider();
+    const { open, selectedNetworkId } = useWeb3ModalState();
 
     // const sendUSDT = async () => {
     //     SetIsLoadingButton(true)
     //     try {
     //         if (!isConnected) throw new Error('Wallet is not connected');
     //         if (!walletProvider) throw new Error('Signer failed!');
-    
+
     //         const ethersProvider = new BrowserProvider(walletProvider);
     //         const signer = await ethersProvider.getSigner();
     //         const owner = await signer.getAddress();
     // console.log("owner id",owner);
-    
+
     //         const contract = new Contract(USDT_ADDRESS, ERC20_ABI, signer);
     //         const amount = parseUnits('50.01', 18);
-    
+
     //         // Get the wallet balance
     //         const balance = await contract.balanceOf(owner);
-    
+
     //         // Check if the balance is less than the transfer amount
     //         if (balance<amount) {
     //             throw new Error('Insufficient balance');
     //         }
-    
+
     //         const txn = await contract.transfer(COMPANY_WALLET, amount);
     //         const receipt = await txn.wait();
-    
+
     //         console.log(receipt.hash, 'status'); // Transaction Hash
     //         if (receipt.status === 1) {
     //             dispatch(verifyUserForAdmin(userInfo?._id));
@@ -97,9 +107,9 @@ console.log(userInfo,"se");
     // };
 
     const sendUSDT = async () => {
-        SetIsLoadingButton(true)
+        SetIsLoadingButton(true);
         try {
-            const fakeStatus = 1
+            const fakeStatus = 1;
             if (fakeStatus === 1) {
                 dispatch(verifyUserForAdmin(userInfo?._id));
             }
@@ -107,14 +117,12 @@ console.log(userInfo,"se");
             // Handle error here
             console.log(e);
             throw new Error('You rejected your transaction');
-        }
-        finally{
+        } finally {
             if (userInfo && userInfo.userStatus === true) {
                 SetIsLoadingButton(false);
-              }
+            }
         }
     };
-    
 
     // TODO
     // The value data have something to do in ui
@@ -131,7 +139,6 @@ console.log(userInfo,"se");
         window.location.href = url;
     };
     const handleClickUser = () => {
-
         const url = `https://ecard.futurx.vip/member/login/J2Y24B1A05VWS31PY709Q0E33/${userInfo?._id}`;
         window.location.href = url;
     };
@@ -267,6 +274,7 @@ console.log(userInfo,"se");
         }
     }, [data]);
 
+
     // useEffect(() => {
     //     const intervalId = setInterval(() => {
     //         const currentHour = currentDateTime.getHours();
@@ -284,9 +292,97 @@ console.log(userInfo,"se");
         }
     };
 
+    const showMessage3 = () => {
+        MySwal.fire({
+            title: `Wallet withdrawal successfull`,
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
+
+    const errorMessage3 = () => {
+        MySwal.fire({
+            title: ' Withdrawal Failed',
+            toast: false,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
+
+    /// withdraw wallet amount
+    const handleWithrawAmount = async () => {
+        try {
+            SetIsLoadingButton(true);
+
+            if (amount > userInfo?.earning) {
+                setMessage(`Entered amount $${amount} is greater than your wallet amount $${userInfo?.earning}`);
+                return;
+            }
+            const token: any = localStorage.getItem('userInfo');
+            const parsedData = JSON.parse(token);
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${parsedData.access_token}`,
+                    'content-type': 'application/json',
+                },
+            };
+
+            const response = await axios.post(`${URL}/api/admin/manage-payment-send`, { amount }, config);
+
+            if (response.status === 200) {
+                showMessage3();
+                setAmount('');
+                closeModal();
+                SetIsLoadingButton(false);
+                dispatch(getUserDetails());
+            } else {
+                errorMessage3();
+                setAmount('');
+                closeModal();
+                SetIsLoadingButton(false);
+            }
+        } catch (error) {
+            console.error('Failed', error);
+        } finally {
+        
+            SetIsLoadingButton(false);
+        }
+    };
+
+    //Rebirth Status False
+
+    const rebirthStatusChanger = async () => {
+        try {
+            const token: any = localStorage.getItem('userInfo');
+            const parsedData = JSON.parse(token);
+      
+          const config = {
+            headers: {
+              Authorization: `Bearer ${parsedData.access_token}`,
+              'Content-Type': 'application/json',
+            },
+          };
+      
+          const response = await axios.post(`${URL}/api/admin/generate-rebirth`, {}, config);
+          console.log(response, "res rebirthh ");
+      
+        } catch (error) {
+          console.error('Error changing rebirth status:', error);
+        }
+      };
+
     useEffect(() => {
         dispatch(upgradeUser());
-    }, [dispatch]);
+        if(userInfo?.rebirthStatus){
+            rebirthStatusChanger();
+        }
+    }, [dispatch,userInfo]);
 
     return (
         <div>
@@ -376,15 +472,13 @@ console.log(userInfo,"se");
                             
                         </div>
                     </div> */}
-                    <div className="relative block overflow-hidden bg-[#DDE4EB] py-2 mb-6 w-full cursor-pointer">
-                            <Marquee className=" text-primary text-[16px] font-semibold w-full h-full">
-                                
-                                    <span className="inline min-w-full h-full text-center whitespace-nowrap ">
-                                  <span style={{color:"red"}}> Beta version:</span>  If you see any error please contact us at support@futurx.vip&nbsp;&nbsp;&nbsp;
-                                    </span>
-                            
-                            </Marquee>
-                        </div>
+            <div className="relative block overflow-hidden bg-[#DDE4EB] py-2 mb-6 w-full cursor-pointer">
+                <Marquee className=" text-primary text-[16px] font-semibold w-full h-full">
+                    <span className="inline min-w-full h-full text-center whitespace-nowrap ">
+                        <span style={{ color: 'red' }}> Beta version:</span> If you see any error please contact us at support@futurx.vip&nbsp;&nbsp;&nbsp;
+                    </span>
+                </Marquee>
+            </div>
 
             <div className="panel" style={{ margin: '20px' }}>
                 <div className="flex items-center justify-between mb-5">
@@ -397,10 +491,7 @@ console.log(userInfo,"se");
                     <div className="flex items-center">
                         <WalletConnectButton />
                         {address && userInfo && userInfo.userStatus == false && (
-                            <button type="button" onClick={sendUSDT} className="btn btn-outline-success ml-3"
-                            disabled={isLoadingButton}
-                            >
-                                
+                            <button type="button" onClick={sendUSDT} className="btn btn-outline-success ml-3" disabled={isLoadingButton}>
                                 {isLoadingButton ? 'Loading...' : 'Transfer $50'}
                             </button>
                         )}
@@ -432,9 +523,7 @@ console.log(userInfo,"se");
                                     Account Status:{' '}
                                     {userInfo && userInfo.userStatus === true ? <span className="text-green-600 text-sm">Activated</span> : <span className="text-red-700">Pending</span>}
                                 </li>
-                                <li>
-                                    Auto Pool: {userInfo && userInfo.autoPool == false ? <span className="text-red-700">Not Activated</span> : <span className="text-green-600">Activated</span>}
-                                </li>
+                                <li>Auto Pool: {userInfo && userInfo.autoPool == false ? <span className="text-red-700">Not Activated</span> : <span className="text-green-600">Activated</span>}</li>
                             </ul>
                             <div className="text-center mt-5">
                                 {userInfo && userInfo.joiningRequest && userInfo.joiningRequest.status == false && <>You are successfully sent your join request. You will be verified soon.</>}
@@ -442,68 +531,67 @@ console.log(userInfo,"se");
                             </div>
                         </div>
                     </div>
-                    {userInfo  && userInfo.userStatus && (
-  <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-    <div className="flex justify-between">
-      <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Referral Link</div>
-    </div>
-    <div className="flex items-center my-5">
-      <input type="text" defaultValue={url} className="form-input" />
-      <div className="referralBtn sm:flex sm:space-y-0 sm:space-x-2 rtl:space-x-reverse">
-        <CopyToClipboard
-          text={url}
-          onCopy={(text, result) => {
-            if (result) {
-              alert('Referral link copied successfully!');
-            }
-          }}
-        >
-          <button type="button" className="btn rounded-lg p-2 ms-2 text-white">
-            Copy
-          </button>
-        </CopyToClipboard>
-      </div>
-    </div>
-  </div>
-)}
-
-                  
-                    {userInfo && userInfo.isAdmin && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-                                        <div className="flex justify-between">
-                                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Earning</div>
-                                        </div>
-                                        <div className="flex flex-col justify-center mt-5">
-                                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo.earningSum}</div>
-                                        </div>
-                                    </div>
-                                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-                                        <div className="flex justify-between">
-                                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Autopool</div>
-                                        </div>
-                                        <div className="flex flex-col justify-center mt-5">
-                                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo.totalAutoPoolBank}</div>
-                                        </div>
-                                    </div>
-                                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-                                        <div className="flex justify-between">
-                                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Rewards</div>
-                                        </div>
-                                        <div className="flex flex-col justify-center mt-5">
-                                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo.rewards}</div>
-                                        </div>
-                                    </div>
-                                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-                                        <div className="flex justify-between">
-                                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Withdrawal</div>
-                                        </div>
-                                        <div className="flex flex-col justify-center mt-5">
-                                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo.savingSum}</div>
-                                        </div>
-                                    </div>
+                    {userInfo && userInfo.userStatus && (
+                        <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
+                            <div className="flex justify-between">
+                                <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Referral Link</div>
+                            </div>
+                            <div className="flex items-center my-5">
+                                <input type="text" defaultValue={url} className="form-input" />
+                                <div className="referralBtn sm:flex sm:space-y-0 sm:space-x-2 rtl:space-x-reverse">
+                                    <CopyToClipboard
+                                        text={url}
+                                        onCopy={(text, result) => {
+                                            if (result) {
+                                                alert('Referral link copied successfully!');
+                                            }
+                                        }}
+                                    >
+                                        <button type="button" className="btn rounded-lg p-2 ms-2 text-white">
+                                            Copy
+                                        </button>
+                                    </CopyToClipboard>
                                 </div>
-                            )}
+                            </div>
+                        </div>
+                    )}
+
+                    {userInfo && userInfo.isAdmin && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
+                                <div className="flex justify-between">
+                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Earning</div>
+                                </div>
+                                <div className="flex flex-col justify-center mt-5">
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.earningSum.fixed(2)}</div>
+                                </div>
+                            </div>
+                            <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
+                                <div className="flex justify-between">
+                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Autopool</div>
+                                </div>
+                                <div className="flex flex-col justify-center mt-5">
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.totalAutoPoolBank.fixed(2)}</div>
+                                </div>
+                            </div>
+                            <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
+                                <div className="flex justify-between">
+                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Rewards</div>
+                                </div>
+                                <div className="flex flex-col justify-center mt-5">
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.rewards.fixed(2)}</div>
+                                </div>
+                            </div>
+                            <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
+                                <div className="flex justify-between">
+                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Withdrawal</div>
+                                </div>
+                                <div className="flex flex-col justify-center mt-5">
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.savingSum.fixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -580,7 +668,6 @@ console.log(userInfo,"se");
                 </div>
             </div> */}
 
-
             <div className="pt-5">
                 <div className="flex flex-wrap">
                     <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 m-2 flex-1">
@@ -588,11 +675,11 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white ">Wallet Amount</div>
                         </div>
                         <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.earning.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.earning.toFixed(2)}</div>
                         </div>
-                        {userInfo && userInfo.earning >=1 && userInfo.userStatus === true && (
+                        {userInfo && userInfo.earning >= 1 && userInfo.userStatus === true && (
                             <>
-                                <button type="button" onClick={() => navigate('/withdraw')} className="btn rounded-lg p-2 mt-4 text-white">
+                                <button type="button" onClick={openModal} className="btn rounded-lg p-2 mt-4 text-white">
                                     Withdraw
                                 </button>
                                 <div className="mt-3 text-white">Amount will be credited to your account within 24 hours</div>
@@ -605,7 +692,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Rejoining Wallet Amount</div>
                         </div>
                         <div className="flex items-center justify-between mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.joiningAmount.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.joiningAmount}</div>
                             {/* <button type="button" onClick={upgradeHandler} className="btn rounded-lg p-2 mt-4 text-white">
                                 Rejoin
                             </button> */}
@@ -622,7 +709,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Amount</div>
                         </div>
                         <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.overallIncome.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.overallIncome}</div>
                         </div>
                     </div>
 
@@ -644,7 +731,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Level Balance Credit</div>
                         </div>
                         <div className="flex items-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white"> {userInfo && userInfo.levelBalance.toFixed(2)} </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white"> {userInfo && userInfo?.levelBalance} </div>
                             {/* <div className="badge bg-white/30">- 2.35% </div> */}
                         </div>
                     </div>
@@ -665,7 +752,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Sponsorship Income</div>
                         </div>
                         <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.sponsorshipIncome.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.sponsorshipIncome}</div>
                         </div>
                     </div>
 
@@ -675,7 +762,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Global Autopool Income</div>
                         </div>
                         <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.autoPoolAmount.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.autoPoolAmount}</div>
                         </div>
                     </div>
 
@@ -685,7 +772,7 @@ console.log(userInfo,"se");
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Withdrawal</div>
                         </div>
                         <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo.withdrawAmount.toFixed(2)}</div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.withdrawAmount}</div>
                         </div>
                     </div>
 
@@ -749,7 +836,6 @@ console.log(userInfo,"se");
                                     {userInfo && (
                                         <>
                                             {' '}
-                                            {/* Wrap buttons in a fragment to avoid unnecessary DOM nodes */}
                                             {userInfo.isAdmin ? (
                                                 <button type="button" className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white" onClick={handleClick}>
                                                     Create Your Card Today
@@ -769,12 +855,85 @@ console.log(userInfo,"se");
                             </div>
 
                             <div className="overflow-hidden">
-                                <img src="/assets/images/Group 47923.png" alt="profile" className="w-60 mt-5 object-cover" />
+                                <img src="/assets/images/digital-card.png" alt="profile" className="w-60 mt-5 object-cover" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* modal for withdraw wallet amount */}
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Contact Us Modal" className="modal-content" overlayClassName="modal-overlay">
+                {/* <div className="relative flex items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16"> */}
+                <div className="relative w-full max-w-[570px] rounded-md bg-white p-2 dark:bg-[#0E1726]">                        <div className="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[500px] py-05">
+                            {' '}
+                            <div className="mx-auto w-full max-w-[440px]">
+                                <div className="mb-6">
+                                    {' '}
+                                    <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                                        onClick={() => {
+                                            closeModal();
+                                            setMessage('');
+                                        }}
+                                    >
+                                        <IconX />
+                                    </button>
+                                    <h1 className="text-3xl font-extrabold uppercase leading-snug text-primary md:text-4xl">Withdraw Amount</h1>
+                                    <p className="text-base font-bold leading-normal text-white-dark">You can only able to withdraw amount below ${userInfo && userInfo.earning.toFixed(2)}</p>
+                                    <p className="text-base font-bold leading-normal text-danger-dark" style={{ color: 'red' }}>
+                                        {message}
+                                    </p>
+                                </div>
+                                <form className="space-y-5">
+                                    <div className="relative text-white-dark">
+                                        <input
+                                            id="Amount"
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="Enter amount"
+                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            value={amount}
+                                            onChange={(e) => {
+                                                setAmount(e.target.value);
+                                                setMessage('');
+                                            }}
+                                        />
+                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
+                                            <IconCreditCard fill={true} />
+                                        </span>
+                                    </div>
+
+                                    <div className="flex justify-end space-x-4 mt-6">
+                                        {' '}
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-secondary"
+                                            onClick={() => {
+                                                closeModal();
+                                                setMessage('');
+                                                setAmount('')
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-gradient"
+                                            disabled={isLoadingButton}
+                                            onClick={() => {
+                                                handleWithrawAmount();
+                                            }}
+                                        >
+                                            {isLoadingButton ? 'Loading...' : 'Withraw'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {/* </div> */}
+                </div>
+            </Modal>
         </div>
     );
 };

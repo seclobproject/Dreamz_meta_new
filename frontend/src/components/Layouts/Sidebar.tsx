@@ -67,10 +67,10 @@ const Sidebar = () => {
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
                             <div className="dark:block hidden">
-                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" />
+                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/LOGO.png" alt="logo" />
                             </div>
                             <div className="visible dark:hidden">
-                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" />
+                                <img className="w-16 md:w-18 ml-[5px] flex-none" src="/LOGO.png" alt="logo" />
                             </div>
                         </NavLink>
 

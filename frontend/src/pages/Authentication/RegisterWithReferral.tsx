@@ -102,10 +102,10 @@ const RegisterWithReferral = () => {
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="main-logo flex justify-center shrink-0 mb-10">
                                 <div className="dark:block hidden">
-                                <img className="w-36 md:w-48 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" style={{ width: '100px' }} />
+                                <img className="w-36 md:w-48 ml-[5px] flex-none" src="/LOGO.png" alt="logo" style={{ width: '100px' }} />
                                 </div>
                                 <div className="visible dark:hidden">
-                                <img className="w-36 md:w-48 ml-[5px] flex-none" src="/logo in white letter-01.png" alt="logo" style={{ width: '100px' }} />
+                                <img className="w-36 md:w-48 ml-[5px] flex-none" src="/LOGO.png" alt="logo" style={{ width: '100px' }} />
                                 </div>
                             </div>
                             <label htmlFor="userName">Copy the refferal link from below</label>
