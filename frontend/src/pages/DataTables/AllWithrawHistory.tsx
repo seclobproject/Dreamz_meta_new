@@ -86,7 +86,7 @@ function AllWithrawHistory() {
                                 title: 'Date and Time',
                                 render: ({ createdAt }:any) => <div>{formatDate(createdAt)}</div>,
                             },
-                            { accessor: 'name', title: 'Name' },
+                            { accessor: 'name', title: 'Names' },
 
                             { accessor: 'category', title: 'Category' },
                             { accessor: 'amount', title: 'Amount' },

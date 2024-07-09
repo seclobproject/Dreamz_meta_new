@@ -105,6 +105,16 @@ const Finance = () => {
     //           }
     //     }
     // };
+    const showMessage = () => {
+        MySwal.fire({
+            title: `Amount Transaction is Successfull`,
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
 
     const sendUSDT = async () => {
         SetIsLoadingButton(true);
@@ -112,9 +122,12 @@ const Finance = () => {
             const fakeStatus = 1;
             if (fakeStatus === 1) {
                 dispatch(verifyUserForAdmin(userInfo?._id));
-            }
+                showMessage();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);     
+                      }
         } catch (e) {
-            // Handle error here
             console.log(e);
             throw new Error('You rejected your transaction');
         } finally {
@@ -475,7 +488,7 @@ const Finance = () => {
             <div className="relative block overflow-hidden bg-[#DDE4EB] py-2 mb-6 w-full cursor-pointer">
                 <Marquee className=" text-primary text-[16px] font-semibold w-full h-full">
                     <span className="inline min-w-full h-full text-center whitespace-nowrap ">
-                        <span style={{ color: 'red' }}> Beta version:</span> If you see any error please contact us at support@futurx.vip&nbsp;&nbsp;&nbsp;
+                        <span style={{ color: 'red' }}> Beta version:</span> If you see any error please contact us at support@dreamzmeta.in&nbsp;&nbsp;&nbsp;
                     </span>
                 </Marquee>
             </div>
@@ -492,7 +505,7 @@ const Finance = () => {
                         <WalletConnectButton />
                         {address && userInfo && userInfo.userStatus == false && (
                             <button type="button" onClick={sendUSDT} className="btn btn-outline-success ml-3" disabled={isLoadingButton}>
-                                {isLoadingButton ? 'Loading...' : 'Transfer $50'}
+                                {isLoadingButton ? 'Loading...' : 'Transfer $31'}
                             </button>
                         )}
                     </div>
@@ -563,7 +576,7 @@ const Finance = () => {
                                     <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Earning</div>
                                 </div>
                                 <div className="flex flex-col justify-center mt-5">
-                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.earningSum.fixed(2)}</div>
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.earningSum}</div>
                                 </div>
                             </div>
                             <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
@@ -571,7 +584,7 @@ const Finance = () => {
                                     <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Autopool</div>
                                 </div>
                                 <div className="flex flex-col justify-center mt-5">
-                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.totalAutoPoolBank.fixed(2)}</div>
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.totalAutoPoolBank}</div>
                                 </div>
                             </div>
                             <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
@@ -579,7 +592,7 @@ const Finance = () => {
                                     <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Rewards</div>
                                 </div>
                                 <div className="flex flex-col justify-center mt-5">
-                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.rewards.fixed(2)}</div>
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.rewards}</div>
                                 </div>
                             </div>
                             <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
@@ -587,7 +600,7 @@ const Finance = () => {
                                     <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Withdrawal</div>
                                 </div>
                                 <div className="flex flex-col justify-center mt-5">
-                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.savingSum.fixed(2)}</div>
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.savingSum}</div>
                                 </div>
                             </div>
                         </div>
@@ -728,7 +741,7 @@ const Finance = () => {
                     </div>
                     <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
                         <div className="flex justify-between">
-                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Level Balance Credit</div>
+                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Level Income</div>
                         </div>
                         <div className="flex items-center mt-5">
                             <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white"> {userInfo && userInfo?.levelBalance} </div>
@@ -865,7 +878,7 @@ const Finance = () => {
             {/* modal for withdraw wallet amount */}
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Contact Us Modal" className="modal-content" overlayClassName="modal-overlay">
                 {/* <div className="relative flex items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16"> */}
-                <div className="relative w-full max-w-[570px] rounded-md bg-white p-2 dark:bg-[#0E1726]">                        <div className="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[500px] py-05">
+                <div className="relative w-full max-w-[550px] rounded-md bg-white p-2 dark:bg-[#0E1726]">                        <div className="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[250px] py-05">
                             {' '}
                             <div className="mx-auto w-full max-w-[440px]">
                                 <div className="mb-6">
@@ -879,8 +892,8 @@ const Finance = () => {
                                     >
                                         <IconX />
                                     </button>
-                                    <h1 className="text-3xl font-extrabold uppercase leading-snug text-primary md:text-4xl">Withdraw Amount</h1>
-                                    <p className="text-base font-bold leading-normal text-white-dark">You can only able to withdraw amount below ${userInfo && userInfo.earning.toFixed(2)}</p>
+                                    <h1 className="text-3xl font-extrabold uppercase leading-snug text-primary md:text-2xl">Withdraw Amount</h1>
+                                    <p className="text-base font-bold leading-normal text-white-dark mt-2">You can only able to withdraw amount below ${userInfo && userInfo.earning.toFixed(2)}</p>
                                     <p className="text-base font-bold leading-normal text-danger-dark" style={{ color: 'red' }}>
                                         {message}
                                     </p>

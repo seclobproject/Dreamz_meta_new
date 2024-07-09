@@ -116,7 +116,7 @@ console.log(error,"errr error");
     };
     const errorMessage2 = (msg: any) => {
         MySwal.fire({
-            title: `Email or Phone already used!`,
+            title: `Email is already used!`,
             toast: true,
             position: 'top-right',
             showConfirmButton: false,
@@ -154,7 +154,7 @@ console.log(error,"errr error");
                             </div>
                             <form className="space-y-5 dark:text-white" action="#">
                                 <div>
-                                    <label htmlFor="userName">User Name</label>
+                                    <label htmlFor="userName">Users Name</label>
                                     <div className="relative text-white-dark">
                                         <input
                                             id="userName"

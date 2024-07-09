@@ -308,11 +308,11 @@ console.log(userInfo,"yser from headr")
                                 <NavLink to="/withdraw">{t('Request Withdraw')}</NavLink>
                             </li> */}
                           <li>
-  {userInfo?.isAdmin ? (
+  {/* {userInfo?.isAdmin ? ( */}
     <NavLink to="/allwithdraw-history">{t('All Withdrawal History')}</NavLink>
-  ) : (
-    <NavLink to="/withdraw-history">{t('Withdrawal History')}</NavLink>
-  )}
+  {/* ) : ( */}
+    {/* <NavLink to="/withdraw-history">{t('Withdrawal History')}</NavLink> */}
+  {/* )} */}
 </li>
 
                         </ul>

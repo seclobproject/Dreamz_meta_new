@@ -81,6 +81,20 @@ const LevelTree = () => {
         setActiveTab(7);
         // dispatch(getUsersByLevel(4));
     };
+    const levelEightHandler = () => {
+        setActiveTab(8);
+        // dispatch(getUsersByLevel(4));
+    };
+    const levelNineHandler = () => {
+        setActiveTab(9);
+        // dispatch(getUsersByLevel(4));
+    };
+    const levelTenHandler = () => {
+        setActiveTab(10);
+        // dispatch(getUsersByLevel(4));
+    };
+
+
 
     return (
         <div className="inline-block w-full">
@@ -148,6 +162,30 @@ const LevelTree = () => {
                         Level 7
                     </div>
                 </li>
+                <li>
+                    <div
+                        className={`${activeTab === 8 ? 'bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800  text-white' : ''} block rounded-full bg-[#f3f2ee] p-2.5 dark:bg-[#1b2e4b]`}
+                        onClick={levelEightHandler}
+                    >
+                        Level 8
+                    </div>
+                </li>
+                <li>
+                    <div
+                        className={`${activeTab === 9 ? 'bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800  text-white' : ''} block rounded-full bg-[#f3f2ee] p-2.5 dark:bg-[#1b2e4b]`}
+                        onClick={levelNineHandler}
+                    >
+                        Level 9
+                    </div>
+                </li>
+                <li>
+                    <div
+                        className={`${activeTab === 10 ? 'bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800  text-white' : ''} block rounded-full bg-[#f3f2ee] p-2.5 dark:bg-[#1b2e4b]`}
+                        onClick={levelTenHandler}
+                    >
+                        Level 10
+                    </div>
+                </li>
             </ul>
 
             <div>
@@ -160,6 +198,9 @@ const LevelTree = () => {
                 <div className="mb-5">{activeTab === 6 && <LevelTreeComponent level={7}  userStatus={userStatus}/>}</div>
 
                 <div className="mb-5">{activeTab === 7 && <LevelTreeComponent level={8}  userStatus={userStatus}/>}</div>
+                <div className="mb-5">{activeTab === 8 && <LevelTreeComponent level={9}  userStatus={userStatus}/>}</div>
+                <div className="mb-5">{activeTab === 9 && <LevelTreeComponent level={10}  userStatus={userStatus}/>}</div>
+                <div className="mb-5">{activeTab === 10 && <LevelTreeComponent level={10}  userStatus={userStatus}/>}</div>
 
             </div>
             <div className="flex justify-between">
@@ -180,10 +221,13 @@ const LevelTree = () => {
                         activeTab === 4 ? 5 :
                         activeTab === 5 ? 6 :
                         activeTab === 6 ? 7 :
+                        activeTab === 7 ? 8 :
+                        activeTab === 8 ? 9 :
+                        activeTab === 9 ? 10 :
                         1
                       )}
                                       >
-                    {activeTab === 7 ? 'Finish' : 'Next'}
+                    {activeTab === 10 ? 'Finish' : 'Next'}
                 </button>
             </div>
         </div>
