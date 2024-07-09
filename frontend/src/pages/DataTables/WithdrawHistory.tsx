@@ -172,6 +172,20 @@ const WithdrawHistory = () => {
             });
         }
     };
+    const formatDate = (date: any) => {
+        if (date) {
+            const dt = new Date(date);
+            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+            const year = dt.getFullYear();
+            const hours = dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours();
+            const minutes = dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes();
+            const seconds = dt.getSeconds() < 10 ? '0' + dt.getSeconds() : dt.getSeconds();
+    
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+        return '';
+    };
 
     return (
         <div className="space-y-6">
@@ -253,6 +267,11 @@ const WithdrawHistory = () => {
                         className="whitespace-nowrap table-striped"
                         records={recordsData}
                         columns={[
+                            {
+                                accessor: 'createdAt',
+                                title: 'Date and Time',
+                                render: ({ createdAt }:any) => <div>{formatDate(createdAt)}</div>,
+                            },
                             { accessor: 'amount', title: 'Amount' },
                             { accessor: 'payStatus', title: 'Status' },
                         ]}
