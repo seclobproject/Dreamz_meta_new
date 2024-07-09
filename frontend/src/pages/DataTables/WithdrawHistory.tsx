@@ -23,12 +23,12 @@ const WithdrawHistory = () => {
     console.log(rowData);
     
 
-    if (rowData) {
-        transformedData = rowData.map((record: any) => ({
-            ...record,
-            payStatus: record.status ? 'Payment Completed' : 'Payment Pending',
-        }));
-    }
+    // if (rowData) {
+    //     transformedData = rowData.map((record: any) => ({
+    //         ...record,
+    //         payStatus: record.status ? 'Payment Completed' : 'Payment Pending',
+    //     }));
+    // }
 
     useEffect(() => {
         dispatch(withdrawHistory());
@@ -44,6 +44,7 @@ const WithdrawHistory = () => {
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     const [initialRecords, setInitialRecords] = useState(transformedData || []);
     const [recordsData, setRecordsData] = useState(initialRecords);
+console.log(recordsData,"recordsData");
 
     const [search, setSearch] = useState('');
     const { data: userInfo } = useAppSelector((state: any) => state.getUserDetailsReducer);
@@ -60,118 +61,128 @@ const WithdrawHistory = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-
     useEffect(() => {
-        dispatch(setPageTitle('Withdrawal'));
-        dispatch(getUserDetails());
+        setInitialRecords(() => {
+            return (rowData || []).filter((item: any) => {
+                const category = item?.category;
+                
+                return typeof category === 'string' && category.toLowerCase().includes(search.toLowerCase());
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search, rowData]);
 
-        if (withdrawInfo) {
-            setMessage(true);
-        }
-    }, [dispatch, withdrawInfo, addToSavingsInfo]);
+    // useEffect(() => {
+    //     dispatch(setPageTitle('Withdrawal'));
+    //     dispatch(getUserDetails());
 
-    setTimeout(() => {
-        setMessage(false);
-    }, 3000);
+    //     if (withdrawInfo) {
+    //         setMessage(true);
+    //     }
+    // }, [dispatch, withdrawInfo, addToSavingsInfo]);
+
+    // setTimeout(() => {
+    //     setMessage(false);
+    // }, 3000);
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
 
-    const submitHandlerToWallet = async (type: number) => {
-        if (type === 9) {
-            Swal.fire({
-                title: 'Are you sure want to withdraw to wallet?',
-                showCloseButton: true,
-                showCancelButton: true,
-                focusConfirm: false,
-                confirmButtonText: 'Proceed',
-                cancelButtonText: 'Cancel',
-                padding: '1em',
-                customClass: 'sweet-alerts',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (amount === undefined || amount === null || amount === '') {
-                        Swal.fire({
-                            title: 'Please enter amount',
-                            showCloseButton: true,
-                            showCancelButton: false,
-                            focusConfirm: false,
-                            confirmButtonText: 'Ok',
-                            padding: '1em',
-                            customClass: 'sweet-alerts',
-                        });
-                        return;
-                    } else if (walletAddress === undefined || walletAddress === null || walletAddress === '') {
-                        Swal.fire({
-                            title: 'Please enter wallet address',
-                            showCloseButton: true,
-                            showCancelButton: false,
-                            focusConfirm: false,
-                            confirmButtonText: 'Ok',
-                            padding: '1em',
-                            customClass: 'sweet-alerts',
-                        });
-                        return;
-                    } else if (amount > userInfo.earning) {
-                        Swal.fire({
-                            title: 'You do not have enough balance',
-                            showCloseButton: true,
-                            showCancelButton: false,
-                            focusConfirm: false,
-                            confirmButtonText: 'Ok',
-                            padding: '1em',
-                            customClass: 'sweet-alerts',
-                        });
-                        return;
-                    }
+    // const submitHandlerToWallet = async (type: number) => {
+    //     if (type === 9) {
+    //         Swal.fire({
+    //             title: 'Are you sure want to withdraw to wallet?',
+    //             showCloseButton: true,
+    //             showCancelButton: true,
+    //             focusConfirm: false,
+    //             confirmButtonText: 'Proceed',
+    //             cancelButtonText: 'Cancel',
+    //             padding: '1em',
+    //             customClass: 'sweet-alerts',
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 if (amount === undefined || amount === null || amount === '') {
+    //                     Swal.fire({
+    //                         title: 'Please enter amount',
+    //                         showCloseButton: true,
+    //                         showCancelButton: false,
+    //                         focusConfirm: false,
+    //                         confirmButtonText: 'Ok',
+    //                         padding: '1em',
+    //                         customClass: 'sweet-alerts',
+    //                     });
+    //                     return;
+    //                 } else if (walletAddress === undefined || walletAddress === null || walletAddress === '') {
+    //                     Swal.fire({
+    //                         title: 'Please enter wallet address',
+    //                         showCloseButton: true,
+    //                         showCancelButton: false,
+    //                         focusConfirm: false,
+    //                         confirmButtonText: 'Ok',
+    //                         padding: '1em',
+    //                         customClass: 'sweet-alerts',
+    //                     });
+    //                     return;
+    //                 } else if (amount > userInfo.earning) {
+    //                     Swal.fire({
+    //                         title: 'You do not have enough balance',
+    //                         showCloseButton: true,
+    //                         showCancelButton: false,
+    //                         focusConfirm: false,
+    //                         confirmButtonText: 'Ok',
+    //                         padding: '1em',
+    //                         customClass: 'sweet-alerts',
+    //                     });
+    //                     return;
+    //                 }
 
-                    dispatch(requestWithdrawal({ amount, walletAddress }));
-                }
-            });
-        }
-    };
+    //                 dispatch(requestWithdrawal({ amount, walletAddress }));
+    //             }
+    //         });
+    //     }
+    // };
 
-    const submitHandlerToSavings = async (type: number) => {
-        if (type === 10) {
-            Swal.fire({
-                title: 'Are you sure want to withdraw to savings?',
-                showCloseButton: true,
-                showCancelButton: true,
-                focusConfirm: false,
-                confirmButtonText: 'Proceed',
-                cancelButtonText: 'Cancel',
-                padding: '1em',
-                customClass: 'sweet-alerts',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (amount === undefined || amount === null || amount === '') {
-                        Swal.fire({
-                            title: 'Please enter amount',
-                            showCloseButton: true,
-                            showCancelButton: false,
-                            focusConfirm: false,
-                            confirmButtonText: 'Ok',
-                            padding: '1em',
-                            customClass: 'sweet-alerts',
-                        });
-                        return;
-                    } else if (amount > userInfo.earning) {
-                        Swal.fire({
-                            title: 'You do not have enough balance',
-                            showCloseButton: true,
-                            showCancelButton: false,
-                            focusConfirm: false,
-                            confirmButtonText: 'Ok',
-                            padding: '1em',
-                            customClass: 'sweet-alerts',
-                        });
-                        return;
-                    }
-                    dispatch(addToSavings({ amount }));
-                }
-            });
-        }
-    };
+    // const submitHandlerToSavings = async (type: number) => {
+    //     if (type === 10) {
+    //         Swal.fire({
+    //             title: 'Are you sure want to withdraw to savings?',
+    //             showCloseButton: true,
+    //             showCancelButton: true,
+    //             focusConfirm: false,
+    //             confirmButtonText: 'Proceed',
+    //             cancelButtonText: 'Cancel',
+    //             padding: '1em',
+    //             customClass: 'sweet-alerts',
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 if (amount === undefined || amount === null || amount === '') {
+    //                     Swal.fire({
+    //                         title: 'Please enter amount',
+    //                         showCloseButton: true,
+    //                         showCancelButton: false,
+    //                         focusConfirm: false,
+    //                         confirmButtonText: 'Ok',
+    //                         padding: '1em',
+    //                         customClass: 'sweet-alerts',
+    //                     });
+    //                     return;
+    //                 } else if (amount > userInfo.earning) {
+    //                     Swal.fire({
+    //                         title: 'You do not have enough balance',
+    //                         showCloseButton: true,
+    //                         showCancelButton: false,
+    //                         focusConfirm: false,
+    //                         confirmButtonText: 'Ok',
+    //                         padding: '1em',
+    //                         customClass: 'sweet-alerts',
+    //                     });
+    //                     return;
+    //                 }
+    //                 dispatch(addToSavings({ amount }));
+    //             }
+    //         });
+    //     }
+    // };
     const formatDate = (date: any) => {
         if (date) {
             const dt = new Date(date);
@@ -192,10 +203,10 @@ const WithdrawHistory = () => {
             
             <div className="panel">
                 <div className="flex items-center justify-between mb-5">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Withraw History</h5>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Withdraw History</h5>
                     {/* <button type="submit" onClick={() => setModal21(true)} className="btn btn-gradient !mt-6  border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]" > Request Withdraw</button> */}
                 </div>
-                <Transition appear show={modal21} as={Fragment}>
+                {/* <Transition appear show={modal21} as={Fragment}>
                             <Dialog
                                 as="div"
                                 open={modal21}
@@ -260,7 +271,7 @@ const WithdrawHistory = () => {
                                     </div>
                                 </div>
                             </Dialog>
-                        </Transition>
+                        </Transition> */}
                 <div className="datatables">
                     <DataTable
                         striped
@@ -273,7 +284,7 @@ const WithdrawHistory = () => {
                                 render: ({ createdAt }:any) => <div>{formatDate(createdAt)}</div>,
                             },
                             { accessor: 'amount', title: 'Amount' },
-                            { accessor: 'payStatus', title: 'Status' },
+                            { accessor: 'status', title: 'Status' },
                         ]}
                         totalRecords={initialRecords ? initialRecords.length : 0}
                         recordsPerPage={pageSize}

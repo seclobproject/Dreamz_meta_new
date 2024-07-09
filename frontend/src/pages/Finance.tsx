@@ -938,7 +938,7 @@ const Finance = () => {
                                                 handleWithrawAmount();
                                             }}
                                         >
-                                            {isLoadingButton ? 'Loading...' : 'Withraw'}
+                                            {isLoadingButton ? 'Loading...' : 'Withdraw'}
                                         </button>
                                     </div>
                                 </form>
