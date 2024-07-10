@@ -33,6 +33,7 @@ const Sidebar = () => {
     };
 
     const { userInfo } = useAppSelector((state: any) => state.authReducer);
+    const { data: userInfos } = useAppSelector((state: any) => state.getUserDetailsReducer);
 
     useEffect(() => {
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
@@ -101,7 +102,7 @@ const Sidebar = () => {
                                     <li>
                                 <NavLink to="/dashboard">{t('Home')}</NavLink>
                             </li>
-                            {userInfo && !userInfo.isAdmin && userInfo.userStatus && (
+                            {userInfos && userInfos.userStatus && (
   <li>
     <NavLink to="/signup">{t('Add New Member')}</NavLink>
   </li>
@@ -132,7 +133,7 @@ const Sidebar = () => {
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('Network')}</span>
                             </h2>
-                            {userInfo?.isAdmin &&(
+                            {userInfos?.isAdmin &&(
 
                             <li className="menu nav-item">
                                 <NavLink to="/all-users" className="group">
@@ -176,7 +177,7 @@ const Sidebar = () => {
                             </li> */}
 
 <li>
-  {userInfo?.isAdmin ? (
+  {userInfos?.isAdmin ? (
    <NavLink to="/allwithdraw-history" className="group">
    <div className="flex items-center">
      <IconMenuCharts className="group-hover:!text-primary shrink-0" />
@@ -187,17 +188,17 @@ const Sidebar = () => {
  </NavLink>
   ) : (
     <NavLink to="/withdraw-history" className="group">
-//     <div className="flex items-center">
-//      <IconMenuCharts className="group-hover:!text-primary shrink-0" />
-//      <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-//      {t('Withdrawal History')}
-//           </span>
-//    </div>
+   <div className="flex items-center">
+    <IconMenuCharts className="group-hover:!text-primary shrink-0" />
+     <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+     {t('Withdrawal History')}
+          </span>
+   </div>
     </NavLink>
    )}
 </li>
 
-                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                            {/* <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('Rewards')}</span>
                             </h2>
@@ -209,7 +210,7 @@ const Sidebar = () => {
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Show Rewards')}</span>
                                     </div>
                                 </NavLink>
-                            </li>
+                            </li> */}
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('Histories')}</span>
@@ -223,7 +224,7 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-                            {(userInfo?.isLeader||userInfo?.isPromoter)&&(
+                            {(userInfos?.isLeader||userInfos?.isPromoter)&&(
                             <li className="menu nav-item">
                                 <NavLink to="/leader-wallet-history" className="group">
                                     <div className="flex items-center">
@@ -247,7 +248,7 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li> */}
-                            {userInfo && userInfo.isAdmin && (
+                            {userInfos && userInfos.isAdmin && (
                                 <>
                                     <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                         <IconMinus className="w-4 h-5 flex-none hidden" />

@@ -26,8 +26,6 @@ const RegisterBoxed = () => {
     const { loading, data: userData, error } = useAppSelector((state: any) => state.addNewUserReducer);
     const { userInfo } = useAppSelector((state: any) => state.authReducer);
     const [errorhandle, setErrorHandle] = useState('');
-console.log(errorhandle,"errr handle");
-console.log(error,"errr error");
 
     useEffect(() => {
         dispatch(setPageTitle('Register new member'));
@@ -53,7 +51,7 @@ console.log(error,"errr error");
             setErrorHandle(error)
         }
     },[error]);
-
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const submitForm = async (e: any) => {
         e.preventDefault();
         const data = { userName, email, password };
@@ -61,8 +59,12 @@ console.log(error,"errr error");
             setErrorHandle('All fields are required.');
             return;
         }
+        if (!emailRegex.test(email)) {
+            setErrorHandle('Invalid email address.');
+            return;
+        }
         if (password !== reEnterPassword) {
-            errorMessage();
+            setErrorHandle("Passwords do not match");
             return;
         } else {
             try {
@@ -177,22 +179,25 @@ console.log(error,"errr error");
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-                                        <input
-                                            id="Email"
-                                            value={email}
-                                            onChange={(e) => {
-                                                setEmail(e.target.value)
-                                                setErrorHandle('')
-                                            }}
-                                            type="email"
-                                            placeholder="Enter Email"
-                                            className="form-input ps-10 placeholder:text-white-dark"
-                                            required
-                                        />
-                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
-                                            <IconMail fill={true} />
-                                        </span>
-                                    </div>
+    <input
+        id="Email"
+        value={email}
+        onChange={(e) => {
+            setEmail(e.target.value);
+            setErrorHandle('');
+        }}
+      
+        type="email"
+        placeholder="Enter Email"
+        className="form-input ps-10 placeholder:text-white-dark"
+        required
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+    />
+    <span className="absolute start-4 top-1/2 -translate-y-1/2">
+        <IconMail fill={true} />
+    </span>
+</div>
+
                                 </div>
                                 <div>
                                     <div className="flex items-center justify-between">

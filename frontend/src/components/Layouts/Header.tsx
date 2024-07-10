@@ -42,7 +42,8 @@ const Header = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useAppSelector((state: any) => state.authReducer);
-console.log(userInfo,"yser from headr")
+    const { data: userInfos } = useAppSelector((state: any) => state.getUserDetailsReducer);
+
     useEffect(() => {
         const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
         if (selector) {
@@ -206,7 +207,7 @@ console.log(userInfo,"yser from headr")
                             <li>
                                 <NavLink to="/dashboard">{t('Home')}</NavLink>
                             </li>
-                            {userInfo && userInfo.userStatus &&(
+                            {userInfos && userInfos.userStatus &&(
   <li>
     <NavLink to="/signup">{t('Add New Member')}</NavLink>
   </li>
@@ -221,7 +222,7 @@ console.log(userInfo,"yser from headr")
                             </li> */}
                         </ul>
                     </li>
-                    {userInfo && userInfo.isAdmin && (
+                    {userInfos && userInfos.isAdmin && (
                         <li className="menu nav-item relative">
                             <button type="button" className="nav-link">
                                 <div className="flex items-center">
@@ -279,7 +280,7 @@ console.log(userInfo,"yser from headr")
                             </div>
                         </button>
                         <ul className="sub-menu">
-                            {userInfo?.isAdmin &&(
+                            {userInfos?.isAdmin &&(
    <li>
    <NavLink to="/all-users">{t('Members')}</NavLink>
 </li>
@@ -308,7 +309,7 @@ console.log(userInfo,"yser from headr")
                                 <NavLink to="/withdraw">{t('Request Withdraw')}</NavLink>
                             </li> */}
                           <li>
-  {userInfo?.isAdmin ? (
+  {userInfos?.isAdmin ? (
     <NavLink to="/allwithdraw-history">{t('All Withdrawal History')}</NavLink>
   ) : (
     <NavLink to="/withdraw-history">{t('Withdrawal History')}</NavLink>
@@ -317,7 +318,7 @@ console.log(userInfo,"yser from headr")
 
                         </ul>
                     </li>
-                    <li className="menu nav-item relative">
+                    {/* <li className="menu nav-item relative">
                         <button type="button" className="nav-link">
                             <div className="flex items-center">
                                 <IconMenuElements className="shrink-0" />
@@ -332,7 +333,7 @@ console.log(userInfo,"yser from headr")
                                 <NavLink to="/show-rewards">{t('Show Rewards')}</NavLink>
                             </li>
                         </ul>
-                    </li>
+                    </li> */}
                     {/* <li className="menu nav-item relative">
                         <button type="button" className="nav-link">
                             <div className="flex items-center">
@@ -387,7 +388,7 @@ console.log(userInfo,"yser from headr")
                           
                 
                         </button>
-                        {(userInfo?.isLeader||userInfo?.isPromoter)&&(
+                        {(userInfos?.isLeader||userInfos?.isPromoter)&&(
          <button type="button" className="nav-link">
          <NavLink to="/leader-wallet-history">{t('Leader Wallet History')}</NavLink>
 

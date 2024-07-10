@@ -10,6 +10,7 @@ import { addNewUser, addNewUserWithRefferal } from '../../store/userSlice';
 import { logout } from '../../store/authSlice';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 // import Dropdown from '../../components/Dropdown';
 // import i18next from 'i18next';
 // import IconCaretDown from '../../components/Icon/IconCaretDown';
@@ -21,15 +22,15 @@ import Swal from 'sweetalert2';
 const RegisterWithReferral = () => {
     const { userId } = useParams();
     const [url, setUrl] = useState(window.location.href);
-
+    const MySwal = withReactContent(Swal);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [showPass, setShowPass] = useState(false);
+    const [errorhandle, setErrorHandle] = useState('');
 
     const { loading, data: userData, error } = useAppSelector((state: any) => state.addNewUserByReferralReducer);
 
@@ -69,14 +70,76 @@ const RegisterWithReferral = () => {
         }
     };
 
-    const submitForm = (e: any) => {
+    const errorMessage = () => {
+        MySwal.fire({
+            title: 'Passwords do not match',
+            toast: false,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
+
+
+
+    const showMessage2 = () => {
+        MySwal.fire({
+            title: `User Added Successfully`,
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
+    const errorMessage2 = () => {
+        MySwal.fire({
+            title: `User Added Failed`,
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 5000,
+            showCloseButton: true,
+        });
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const submitForm = async (e: any) => {
         e.preventDefault();
-        const data = { userName, email, password, userId };
-        if (password !== reEnterPassword) {
-            alert('Passwords do not match');
+        const data = { userName, email, password };
+        if (!userName || !email || !password || !reEnterPassword) {
+            setErrorHandle('All fields are required.');
             return;
-        } else {
-            dispatch(addNewUserWithRefferal(data));
+        }        if (password !== reEnterPassword) {
+            setErrorHandle("Passwords do not match");
+            return;
+        } if (!emailRegex.test(email)) {
+            setErrorHandle('Invalid email address.');
+            return;
+        }
+        else {
+            try{
+            const response =  await dispatch(addNewUserWithRefferal(data)); 
+            console.log("resposne: reg ", response);
+            if(response.type==='addNewUserWithRefferal/fulfilled'){
+                showMessage2();
+                setUserName('');
+                setEmail('');
+                setPassword('');
+                setReEnterPassword('');
+            }
+            else if(response.type==='addNewUserWithRefferal/rejected'){
+                setErrorHandle(error)
+                errorMessage2()
+                
+            }
+               
+            } catch (error) {
+                console.error('Failed to add new user:', error);
+                
+            }
         }
         // if (userData) navigate('/');
     };
@@ -108,7 +171,7 @@ const RegisterWithReferral = () => {
                                 <img className="w-36 md:w-48 ml-[5px] flex-none" src="/LOGO.png" alt="logo" style={{ width: '100px' }} />
                                 </div>
                             </div>
-                            <label htmlFor="userName">Copy the refferal link from below</label>
+                            <label htmlFor="userName">Copy the referral link from below</label>
                             <div className="flex items-center mb-5">
                                 <input type="text" value={url} className="form-input" onChange={(e) => setUrl(e.target.value)} />
                                 <div className="referralBtn sm:flex sm:space-y-0 sm:space-x-2 rtl:space-x-reverse">
@@ -163,8 +226,11 @@ const RegisterWithReferral = () => {
                                         <input
                                             id="Email"
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            type="email"
+                                            onChange={(e) => {
+                                                setEmail(e.target.value);
+                                                setErrorHandle('');
+                                            }}
+                                                                                        type="email"
                                             placeholder="Enter Email"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             required
@@ -185,8 +251,11 @@ const RegisterWithReferral = () => {
                                         <input
                                             id="Password"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            type={showPass ? `text` : `password`}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value);
+                                                setErrorHandle('');
+                                            }}                                          
+                                              type={showPass ? `text` : `password`}
                                             placeholder="Enter Password"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             required
@@ -203,8 +272,10 @@ const RegisterWithReferral = () => {
                                             id="Password"
                                             value={reEnterPassword}
                                             type={showPass ? `text` : `password`}
-                                            onChange={(e) => setReEnterPassword(e.target.value)}
-                                            placeholder="Re-enter Password"
+                                            onChange={(e) => {
+                                                setReEnterPassword(e.target.value);
+                                                setErrorHandle('');
+                                            }}                                            placeholder="Re-enter Password"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             required
                                         />
@@ -220,8 +291,10 @@ const RegisterWithReferral = () => {
                                 </button>
                             </form>
                             <div className="text-center mt-7 dark:text-white">
-                                {userData && <div>Submitted successfully!</div>}
-                                {error && <div className="text-red-600">{error}</div>}
+                                {/* {userData && <div>Submitted successfully!</div>} */}
+                                {/* {error && <div className="text-red-600">{error}</div>} */}
+                                {errorhandle && <div className="text-red-600">{errorhandle}</div>}
+
                             </div>
                             <div onClick={logoutHandler} className="text-center mt-7 dark:text-white cursor-pointer">
                                 Logout

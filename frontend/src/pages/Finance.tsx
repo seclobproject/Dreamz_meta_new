@@ -44,7 +44,6 @@ const Finance = () => {
         setModalIsOpen(false);
     };
     const { data: userInfo } = useAppSelector((state: any) => state.getUserDetailsReducer);
-    console.log(userInfo, 'se');
 
     const { loading: joiningLoading, data: joiningData, error: joiningError } = useAppSelector((state: any) => state.sendJoiningRequestReducer);
 
@@ -144,7 +143,7 @@ const Finance = () => {
 
     let url = '';
     if (userInfo) {
-        url = `https://dreamzmeta.com/signup/${userInfo._id}`;
+        url = `https://login.futurx.vip/signup/${userInfo._id}`;
     }
 
     const handleClick = () => {
@@ -589,10 +588,10 @@ const Finance = () => {
                             </div>
                             <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
                                 <div className="flex justify-between">
-                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Company Profit</div>
+                                    <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Rewards</div>
                                 </div>
                                 <div className="flex flex-col justify-center mt-5">
-                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.companyProfit}</div>
+                                    <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${totalAmountInfo && totalAmountInfo?.rewards}</div>
                                 </div>
                             </div>
                             <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
@@ -713,19 +712,6 @@ const Finance = () => {
                         {/* {rejoinMessage === 1 && <div className="mt-2 text-white">You are successfully upgraded.</div>}
                         {rejoinMessage === 2 && <div className="mt-2  text-white ">You are not eligible for upgrade as of now</div>} */}
                     </div>
-                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 m-2 flex-1">
-                        <div className="flex justify-between">
-                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Rebirth Wallet Amount</div>
-                        </div>
-                        <div className="flex items-center justify-between mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.rebirthAmount}</div>
-                            {/* <button type="button" onClick={upgradeHandler} className="btn rounded-lg p-2 mt-4 text-white">
-                                Rejoin
-                            </button> */}
-                        </div>
-                        {/* {rejoinMessage === 1 && <div className="mt-2 text-white">You are successfully upgraded.</div>}
-                        {rejoinMessage === 2 && <div className="mt-2  text-white ">You are not eligible for upgrade as of now</div>} */}
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ margin: '10px' }}>
@@ -757,7 +743,7 @@ const Finance = () => {
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Level Income</div>
                         </div>
                         <div className="flex items-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white"> {userInfo && userInfo?.levelIncome} </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">$ {userInfo && userInfo?.levelBalance} </div>
                             {/* <div className="badge bg-white/30">- 2.35% </div> */}
                         </div>
                     </div>
@@ -792,7 +778,7 @@ const Finance = () => {
                         </div>
                     </div>
 
-                    {/* total withdrawal */}
+                    {/* Savings account */}
                     <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
                         <div className="flex justify-between">
                             <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Withdrawal</div>
@@ -801,28 +787,19 @@ const Finance = () => {
                             <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.withdrawAmount}</div>
                         </div>
                     </div>
-                    {/* Savings account */}
-                    <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
-                        <div className="flex justify-between">
-                            <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Total Savings</div>
-                        </div>
-                        <div className="flex flex-col justify-center mt-5">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white">${userInfo && userInfo?.savingsIncome}</div>
-                        </div>
-                    </div>
 
                     {/* Total direct refferals */}
-                    {/* {(userInfo?.isLeader || userInfo?.isPromoter) && (
+                    {(userInfo?.isLeader || userInfo?.isPromoter) && (
                         <div className="panel bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 ">
                             <div className="flex justify-between">
                                 <div className="ltr:mr-1 rtl:ml-1 text-md font-semibold text-white">Leader wallet</div>
                             </div>
                             <div className="flex items-center mt-5">
                                 <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3 text-white"> {userInfo && userInfo.leaderIncome} </div>
-                                <div className="badge bg-white/30">- 2.35% </div>
+                                {/* <div className="badge bg-white/30">- 2.35% </div> */}
                             </div>
                         </div>
-                    )} */}
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6 text-white" style={{ marginTop: '10px' }}></div>
@@ -872,16 +849,14 @@ const Finance = () => {
                                         <>
                                             {' '}
                                             {userInfo.isAdmin ? (
-                                                <button type="button" className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white"
-                                                //  onClick={handleClick}
-                                                >
+                                                <button type="button" className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white" onClick={handleClick}>
                                                     Create Your Card Today
                                                 </button>
                                             ) : (
                                                 <button
                                                     type="button"
                                                     className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white"
-                                                    // onClick={handleClickUser}
+                                                    onClick={handleClickUser}
                                                 >
                                                     Create Your Card Today
                                                 </button>
