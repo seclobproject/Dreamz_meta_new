@@ -10,7 +10,7 @@ export const payUser =async (amount, sponser, lastWallet) =>{
   let joining = sponser.joiningAmount;
   let rebirthAmount = sponser.rebirthAmount;
   let totalWallet = sponser.totalWallet;
-  let rebirthStatus=false;
+  let rebirthStatus;
   let addToTotalWallet = 0;
   let variousIncome = 0;
   let currentWallet = lastWallet;
