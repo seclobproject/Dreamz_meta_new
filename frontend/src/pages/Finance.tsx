@@ -144,7 +144,7 @@ const Finance = () => {
 
     let url = '';
     if (userInfo) {
-        url = `https://login.futurx.vip/signup/${userInfo._id}`;
+        url = `https://dreamzmeta.com/signup/${userInfo._id}`;
     }
 
     const handleClick = () => {
@@ -872,14 +872,16 @@ const Finance = () => {
                                         <>
                                             {' '}
                                             {userInfo.isAdmin ? (
-                                                <button type="button" className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white" onClick={handleClick}>
+                                                <button type="button" className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white"
+                                                //  onClick={handleClick}
+                                                >
                                                     Create Your Card Today
                                                 </button>
                                             ) : (
                                                 <button
                                                     type="button"
                                                     className="rounded-lg py-2 px-5 bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800 text-white"
-                                                    onClick={handleClickUser}
+                                                    // onClick={handleClickUser}
                                                 >
                                                     Create Your Card Today
                                                 </button>
