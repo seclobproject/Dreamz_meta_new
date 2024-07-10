@@ -886,7 +886,7 @@ router.post(
       const admin = await User.findOne({ isAdmin: true });
       const earning=user.earning;
 
-      if(earning<amount&&earning>=1){
+      if(earning<amount && amount>=1){
         res.status(400).json({ sts: "00", msg: "insufficient bance in your earning wallet" });
       }
       const reciept= await sendUSDT(user.walletAddress,amount)
@@ -990,7 +990,7 @@ router.post(
     }
 
     admin.transactions.push({
-      amount: 30,
+      amount: 31,
       category: "Rebirth Amount",
       basedOnWho: newUser.name,
     });

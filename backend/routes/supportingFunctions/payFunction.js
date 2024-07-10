@@ -22,17 +22,20 @@ export const payUser =async (amount, sponser, lastWallet) =>{
     if (currentWallet === 'earning') {
       console.log("entered in earning");
 
-      const spaceInEarning = 30 - (totalWallet % 30);
+      const spaceInEarning = 31 - (totalWallet % 31);
       const amountToAdd = Math.min(amount, spaceInEarning);
       earning += amountToAdd;
       totalWallet += amountToAdd;
       addToTotalWallet += amountToAdd;
       variousIncome += amountToAdd;
       amount -= amountToAdd;
-      if (totalWallet % 30 === 0 ) {
+      if (totalWallet % 31 === 0 ) {
         currentWallet = 'joining';
       }
-      if(savings % 250 === 0){
+      // if(savings>0&&savings % 155 === 0){
+      //   currentWallet = 'rebirth';
+      // }
+      if(totalWallet % 93 === 0){
         currentWallet = 'rebirth';
       }
       // if(earning>=10){
@@ -45,22 +48,22 @@ export const payUser =async (amount, sponser, lastWallet) =>{
       
     } else if(currentWallet==='joining'){
 
-      const spaceInJoining = 30 - (joining % 30);
+      const spaceInJoining = 31 - (joining % 31);
       const amountToAdd = Math.min(amount, spaceInJoining);
       joining += amountToAdd;
       variousIncome += amountToAdd;
       amount -= amountToAdd;
-      if (joining % 30 === 0) {
+      if (joining % 31 === 0) {
         currentWallet = 'earning';
       }
       
     }else{
-      const spaceInRebirth = 30 - (rebirthAmount % 30);
+      const spaceInRebirth = 31 - (rebirthAmount % 31);
       const amountToAdd = Math.min(amount, spaceInRebirth);
       rebirthAmount += amountToAdd;
       variousIncome += amountToAdd;
       amount -= amountToAdd;
-      if (rebirthAmount % 30 === 0) {
+      if (rebirthAmount % 31 === 0) {
         currentWallet = 'joining';
         // create new user
         rebirthStatus=true;

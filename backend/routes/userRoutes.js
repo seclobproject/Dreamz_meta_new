@@ -68,7 +68,7 @@ const hashedPassword = bcrypt.hashSync(password, 10);
     if (user) {
       
     // Send confirmation email
-    await sendMail(user.email, user.name, user.ownSponserId, password);
+    // await sendMail(user.email, user.name, user.ownSponserId, password);
 
       res.status(200).json({
         id: user._id,
@@ -239,7 +239,7 @@ router.get(
     const admin = await User.findOne({ isAdmin: true });
     // const promoters = await User.find({ isPromoter: true });
 
-    if (user.joiningAmount >= 30) {
+    if (user.joiningAmount >= 31) {
       // const updatePromoter = async (promoter) => {
       //   console.log(promoter.name);
       //   promoter.leaderIncome += 2.5;
@@ -290,15 +290,15 @@ router.get(
     //       }
     //     }
 
-      user.joiningAmount -= 30;
-      user.rejoiningWallet += 30;
+      user.joiningAmount -= 31;
+      user.rejoiningWallet += 31;
       user.transactions.push({
-        amount: -30,
+        amount: -31,
         category: "Rejoing Amount",
       });
-      admin.rejoiningWallet += 30;
+      admin.rejoiningWallet += 31;
       admin.transactions.push({
-        amount: 30,
+        amount: 31,
         category: "Rejoing Amount",
         basedOnWho: user.name,
       });
