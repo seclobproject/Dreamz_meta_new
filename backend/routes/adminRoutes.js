@@ -538,7 +538,7 @@ router.get(
             }
 
             // Add amount to each user start
-            const splitCommission = payUser(
+            const splitCommission = await payUser(
               amountPerUser,
               user,
               user.lastWallet
@@ -591,7 +591,7 @@ router.get(
             }
 
             // Add amount to each user start
-            const splitCommission = payUser(
+            const splitCommission = await payUser(
               amountPerUser,
               user,
               user.lastWallet
@@ -648,7 +648,7 @@ router.get(
             }
 
             // Add amount to each user start
-            const splitCommission = payUser(
+            const splitCommission = await payUser(
               amountPerUser,
               user,
               user.lastWallet
@@ -702,7 +702,7 @@ router.get(
             user.overallIncome += amountPerUser;
 
             // Add amount to each user start
-            const splitCommission = payUser(
+            const splitCommission =await payUser(
               amountPerUser,
               user,
               user.lastWallet
@@ -886,8 +886,8 @@ router.post(
       const admin = await User.findOne({ isAdmin: true });
       const earning=user.earning;
 
-      if(earning<amount && amount>=1){
-        res.status(400).json({ sts: "00", msg: "insufficient bance in your earning wallet" });
+      if(earning<amount && amount<1){
+        res.status(400).json({ sts: "00", msg: "insufficient balance in your earning wallet" });
       }
       const reciept= await sendUSDT(user.walletAddress,amount)
 
