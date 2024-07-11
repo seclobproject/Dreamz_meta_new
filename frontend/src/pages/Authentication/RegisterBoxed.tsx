@@ -156,7 +156,7 @@ const RegisterBoxed = () => {
                             </div>
                             <form className="space-y-5 dark:text-white" action="#">
                                 <div>
-                                    <label htmlFor="userName">Users Name</label>
+                                    <label htmlFor="userName">User Name</label>
                                     <div className="relative text-white-dark">
                                         <input
                                             id="userName"

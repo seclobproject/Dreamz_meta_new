@@ -58,7 +58,6 @@ const IncomesComponent: React.FC<LevelTreeComponentProps> = ({ level }) => {
     { accessor: 'name', title: 'Name' },
     { accessor: 'email', title: 'Email' },
     { accessor: 'ownSponserId', title: 'Sponsor ID' },
-    { accessor: 'transactionID', title: 'Transaction ID' },
     { accessor: 'verifyStatus', title: 'Status', render: (value) => {
         if (value === 'pending') return 'Pending';
         if (value === 'inactive') return 'Inactive';

@@ -9,6 +9,7 @@ export const payUser =async (amount, sponser, lastWallet) =>{
   let savings=sponser.savingsIncome;
   let joining = sponser.joiningAmount;
   let rebirthAmount = sponser.rebirthAmount;
+  // const walletTotal=sponser.totalWallet;
   let totalWallet = sponser.totalWallet;
   let rebirthStatus;
   let addToTotalWallet = 0;
@@ -29,15 +30,14 @@ export const payUser =async (amount, sponser, lastWallet) =>{
       addToTotalWallet += amountToAdd;
       variousIncome += amountToAdd;
       amount -= amountToAdd;
+      
       if (totalWallet % 31 === 0 ) {
         currentWallet = 'joining';
       }
-      // if(savings>0&&savings % 155 === 0){
-      //   currentWallet = 'rebirth';
-      // }
-      if(totalWallet % 93 === 0){
-        currentWallet = 'rebirth';
-      }
+      // if(savings>=150){
+      //     currentWallet = 'rebirth';
+      //   }
+        
       // if(earning>=10){
       //  const reciept= await sendUSDT(sponser.walletAddress)
       //  if(reciept.status===1){

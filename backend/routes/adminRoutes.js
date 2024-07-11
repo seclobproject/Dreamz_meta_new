@@ -921,6 +921,9 @@ router.post(
         const updatedAdmin = await admin.save();
   
         if (updatedUser && updatedAdmin) {
+          // if(updatedUser.savingsIncome>=150){
+          //   currentWallet = 'rebirth';
+          // }
           res.status(200).json({
             sts: "01",
             msg: "Withdrawal successfully",
@@ -939,6 +942,7 @@ router.post(
   "/generate-rebirth",
   protect,
   asyncHandler(async (req, res) => {
+    console.log("reched rebirth function");
     const userId = req.user._id;
 
     const sponser = await User.findById(userId);
@@ -975,7 +979,7 @@ router.post(
       return res.status(500).json({ sts: "00", msg: "Error creating new user" });
     }
 
-    await sendMail(sponser.email, name, ownSponserId, '123456');
+    await sendMail(sponser.email, name, ownSponserId, '123456',newUser.email);
 
     if (!sponser.children.includes(newUser._id)) {
       sponser.children.push(newUser._id);
@@ -1007,7 +1011,7 @@ router.post(
     } else if (sponser.overallIncome >= 600 && sponser.currentPlan == "crownAchiever") {
       sponser.currentPlan = "diamondAchiever";
     }
-
+    sponser.rebirthAmount -= 31;
     sponser.transactions.push({
       amount: 4,
       category: "sponsorship",
@@ -1029,7 +1033,7 @@ router.post(
       sponser.autoPoolPlan = "startPossession";
     }
     sponser.rebirthStatus = false;
-
+    sponser.savingsIncome-=150;
     const updateSponsor = await sponser.save();
     let updateTree;
     if (updateSponsor) {
@@ -1044,6 +1048,7 @@ router.post(
       const updatedUser = await newUser.save();
 
       if (updatedUser) {
+        console.log("Rebirth id generated successfully");
         res.status(200).json({ sts: "01", message: "Rebirth id generated successfully" });
       } else {
         res.status(400).json({ sts: "00", msg: "Error occurred while updating!" });

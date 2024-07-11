@@ -138,7 +138,6 @@ const AllMembers = () => {
                             { accessor: 'name', title: 'Name' },
                             { accessor: 'sponser.name', title: 'Sponsor' },
                             { accessor: 'verifyStatus', title: 'Status' },
-                            { accessor: 'transactionID', title: 'Transaction ID' },
                             {
                                 accessor: 'createdAt',
                                 title: 'Joining Date',

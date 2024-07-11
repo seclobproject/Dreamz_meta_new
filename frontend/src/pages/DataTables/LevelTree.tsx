@@ -200,15 +200,14 @@ const LevelTree = () => {
                 <div className="mb-5">{activeTab === 7 && <LevelTreeComponent level={8}  userStatus={userStatus}/>}</div>
                 <div className="mb-5">{activeTab === 8 && <LevelTreeComponent level={9}  userStatus={userStatus}/>}</div>
                 <div className="mb-5">{activeTab === 9 && <LevelTreeComponent level={10}  userStatus={userStatus}/>}</div>
-                <div className="mb-5">{activeTab === 10 && <LevelTreeComponent level={10}  userStatus={userStatus}/>}</div>
+                <div className="mb-5">{activeTab === 10 && <LevelTreeComponent level={11}  userStatus={userStatus}/>}</div>
 
             </div>
             <div className="flex justify-between">
                 <button
                     type="button"
                     className={`bg-gradient-to-r from-purple-950 via-purple-900 to-purple-800  rounded-lg px-5 py-3 text-white ${activeTab === 1 ? 'hidden' : ''}`}
-                    onClick={() => setActiveTab(activeTab === 7 ? 6 : activeTab === 6 ? 5 : activeTab === 5 ? 4 : activeTab === 4 ? 3 : activeTab === 3 ? 2 : activeTab === 2 ? 1 : 7)}
-                    >
+                    onClick={() => setActiveTab(activeTab === 10 ? 9:activeTab === 9 ? 8:activeTab === 8 ? 7:activeTab === 7 ? 6 : activeTab === 6 ? 5 : activeTab === 5 ? 4 : activeTab === 4 ? 3 : activeTab === 3 ? 2 : activeTab === 2 ? 1 : 10)}                    >
                     Back
                 </button>
                 <button
