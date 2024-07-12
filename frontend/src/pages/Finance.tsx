@@ -17,6 +17,7 @@ import Marquee from 'react-fast-marquee';
 import { useWeb3ModalState } from '@web3modal/ethers/react';
 import { ERC20_ABI } from '../ERC20_ABI';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
+import { BrowserProvider, Contract, ethers, formatUnits, parseUnits } from 'ethers'
 import Modal from 'react-modal';
 import '../assets/css/modal.css';
 import IconX from '../components/Icon/IconX';
@@ -44,12 +45,17 @@ const Finance = () => {
         setModalIsOpen(false);
     };
     const { data: userInfo } = useAppSelector((state: any) => state.getUserDetailsReducer);
+    const { data: updatedUser } = useAppSelector((state: any) => state.verifyUserForAdminReducer);
+
 
     const { loading: joiningLoading, data: joiningData, error: joiningError } = useAppSelector((state: any) => state.sendJoiningRequestReducer);
 
     const { data: upgradeInfo, error: upgradeError } = useAppSelector((state: any) => state.upgradeUserReducer);
 
+    
+
     const { data: totalAmountInfo } = useAppSelector((state: any) => state.getTotalAmountsReducer);
+
     let url2 = '0xFD539e080e7024b07166595c3D5022EbAF46927E';
     useEffect(() => {
         if (upgradeInfo) {
@@ -104,6 +110,9 @@ const Finance = () => {
     //           }
     //     }
     // };
+
+    
+    
     const showMessage = () => {
         MySwal.fire({
             title: `Amount Transaction is Successfull`,
@@ -118,24 +127,52 @@ const Finance = () => {
     const sendUSDT = async () => {
         SetIsLoadingButton(true);
         try {
-            const fakeStatus = 1;
-            if (fakeStatus === 1) {
-                dispatch(verifyUserForAdmin(userInfo?._id));
-                showMessage();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);     
-                      }
+            if (!isConnected) throw new Error('Wallet is not connected');
+            if (!walletProvider) throw new Error('Signer failed!');
+
+            const ethersProvider = new BrowserProvider(walletProvider);
+            const signer = await ethersProvider.getSigner();
+            const owner = await signer.getAddress();
+    console.log("owner id",owner);
+
+            const contract = new Contract(USDT_ADDRESS, ERC20_ABI, signer);
+            const amount = parseUnits('31.01', 18);
+
+            // Get the wallet balance
+            const balance = await contract.balanceOf(owner);
+
+            // Check if the balance is less than the transfer amount
+            if (balance<amount) {
+                throw new Error('Insufficient balance');
+            }
+
+            const txn = await contract.transfer(COMPANY_WALLET, amount);
+            const receipt = await txn.wait();
+
+            console.log(receipt.hash, 'status'); // Transaction Hash
+            if (receipt.status === 1) {
+               await dispatch(verifyUserForAdmin(userInfo?._id));
+            }
+            console.log("send USDT response", updatedUser);   
         } catch (e) {
             console.log(e);
             throw new Error('You rejected your transaction');
-        } finally {
-            if (userInfo && userInfo.userStatus === true) {
-                SetIsLoadingButton(false);
-            }
-        }
+         } 
+        //finally {
+        //     SetIsLoadingButton(false);
+        //     if (updatedUser && updatedUser.updatedUser.userStatus === true) {
+        //         showMessage();
+        //     }
+        // }
     };
 
+    useEffect(() => {
+        if (updatedUser && updatedUser.updatedUser.userStatus === true) {
+            showMessage();
+            window.location.reload();
+            SetIsLoadingButton(false);
+        }
+    }, [updatedUser]);
     // TODO
     // The value data have something to do in ui
     // Which i didn't consider

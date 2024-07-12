@@ -142,7 +142,6 @@ const hashedPassword = bcrypt.hashSync(password, 10);
       sponser,
       // leader,
       // isLeader,
-      verifyStatus:"pending",
       name,
       email,
       password:hashedPassword,
@@ -150,7 +149,7 @@ const hashedPassword = bcrypt.hashSync(password, 10);
     });
 
     if (user) {
-    await sendMail(user.email, user.name, user.ownSponserId, password);
+     await sendMail(user.email, user.name, user.ownSponserId, password);
 
       res.status(200).json({
         id: user._id,

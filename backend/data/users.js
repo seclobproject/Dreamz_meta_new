@@ -4,10 +4,10 @@ const users = [
   {
     sponser: null,
     name: "Super Admin",
-    email: "futurx@gmail.com",
+    email: "dreamzmeta@gmail.com",
     password: bcrypt.hashSync("pass123", 10),
     isAdmin: true,
-    ownSponserId: "FX155465",
+    ownSponserId: "DM155465",
     earning: 0,
     transactions: [],
     userStatus: true,

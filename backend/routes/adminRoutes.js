@@ -268,7 +268,7 @@ router.post(
 
         if (updateSponsor && updatedUser) {
           console.log("success");
-          res.status(200).json({ sts: "01", message: "Success" });
+          res.status(200).json({ sts: "01",updatedUser, message: "Success" });
         } else {
           res
             .status(400)
@@ -322,7 +322,7 @@ router.post(
     console.log(user.name);
     console.log(address);
     user.walletAddress=address;
-    updatedUser=await user.save()
+    const updatedUser=await user.save()
 
     if (updatedUser) {
       res.json(updatedUser.walletAddress);

@@ -108,7 +108,7 @@ const RegisterWithReferral = () => {
 
     const submitForm = async (e: any) => {
         e.preventDefault();
-        const data = { userName, email, password };
+        const data = { userName, email, password, userId };
         if (!userName || !email || !password || !reEnterPassword) {
             setErrorHandle('All fields are required.');
             return;
