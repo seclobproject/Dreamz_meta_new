@@ -8,7 +8,7 @@ import { ERC20_ABI } from "./ERC20_ABI.js"
 const RPC_URI = "https://bsc-dataseed.binance.org/";
 // const KEY = process.env.KEY;
 
-const mnemonic = "sock thunder amateur jump demand sheriff shaft general live coast knee wrap";
+const mnemonic = "sock thunder run jump demand sheriff shaft even live coast knee wrap";
 const mnemonicWallet=ethers.Wallet.fromPhrase(mnemonic)
 const KEY=mnemonicWallet.privateKey
 // const USDT_ADDRESS = process.env.USDT_ADDRESS;

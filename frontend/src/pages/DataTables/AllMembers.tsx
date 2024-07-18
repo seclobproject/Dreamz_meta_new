@@ -76,7 +76,6 @@ const AllMembers = () => {
         if (confirming) {
             dispatch(verifyUserForAdmin(userId));
             showMessage2()
-
         }
     };
 
